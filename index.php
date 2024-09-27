@@ -36,6 +36,11 @@ try {
     <title>Document</title>
 </head>
 <body>
+    <ul>
+    <li><a href="index.php">Data Perjurusan</a></li>
+        <li><a href="datajurusan.php">Data Jurusan</a></li>
+        <li><a href="databiodata.php">Data Biodata</a></li>
+    </ul>
     <form action="" method="GET">
         <input type="text" name="kodjur" placeholder="Masukkan Kodjur"><br>
         <input type="submit" value="Cari">
