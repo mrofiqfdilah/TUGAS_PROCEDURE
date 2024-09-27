@@ -25,15 +25,32 @@ if (isset($_POST['delete'])) {
     }
 }
 
-// Menjalankan stored procedure untuk menampilkan data jurusan
-$query = "CALL TAMPIL_JURUSAN1()";
-$result = $mysqli->query($query);
+// Inisialisasi variabel jurusan
+$jurusan = [];
 
-// Cek apakah ada hasil
-if ($result->num_rows > 0) {
-    $jurusan = $result->fetch_all(MYSQLI_ASSOC);
+// Proses pencarian jika ada request GET dengan input pencarian
+if (isset($_GET['search']) && !empty($_GET['search'])) {
+    $kodjurSearch = $_GET['search'];
+
+    // Menjalankan stored procedure TampilDataPerjurusan untuk pencarian
+    $searchQuery = "CALL search_jurusan('$kodjurSearch')";
+    $result = $mysqli->query($searchQuery);
+
+    // Cek apakah ada hasil
+    if ($result && $result->num_rows > 0) {
+        $jurusan = $result->fetch_all(MYSQLI_ASSOC);
+    }
+    $result->free();
 } else {
-    $jurusan = [];
+    // Jika tidak ada pencarian, jalankan stored procedure TAMPIL_JURUSAN1
+    $query = "CALL TAMPIL_JURUSAN1()";
+    $result = $mysqli->query($query);
+
+    // Cek apakah ada hasil
+    if ($result->num_rows > 0) {
+        $jurusan = $result->fetch_all(MYSQLI_ASSOC);
+    }
+    $result->free();
 }
 
 // Tutup koneksi
@@ -48,7 +65,13 @@ $mysqli->close();
     <title>Data Jurusan</title>
 </head>
 <body>
-    <input type="search" name="" id="">
+
+    <!-- Form Pencarian -->
+    <form action="" method="get">
+        <input type="text" id="search" name="search" placeholder="Input KodJur" value="<?= isset($_GET['search']) ? $_GET['search'] : '' ?>">
+        <button type="submit">Cari</button>
+    </form>
+
     <button><a href="tambahjurusan.php">Tambah Data</a></button>
     
     <table border="1" cellpadding="10">
